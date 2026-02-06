@@ -40,3 +40,41 @@ class SalesAnalyzer:
     def export_clean_data(self, output_path: str):
         self.df.to_csv(output_path, index=False)
 
+    def total_revenue(self):
+        """Einkommen"""
+        return self.df.loc[
+            self.df["status"] == "completed", "order_amount"
+        ].sum()
+
+    def average_order_value(self):
+        completed = self.df[self.df["status"] == "completed"]
+        return completed["order_amount"].mean()
+
+    def average_order_value(self):
+        completed = self.df[self.df["status"] == "completed"]
+        return completed["order_amount"].mean()
+
+    def customer_count(self):
+        return self.df["customer_id"].nunique()
+
+    def revenue_by_category(self):
+        return (
+            self.df[self.df["status"] == "completed"].groupby("product_category")["order_amount"].sum().sort_values(ascending=False)
+        )
+
+    def top_customers(self, n=10):
+        return (
+            self.df[self.df["status"] == "completed"].groupby("customer_id")["order_amount"].sum().sort_values(ascending=False).head(n)
+        )
+
+    def repeat_customer_rate(self):
+        orders_per_customer = self.df.groupby("customer_id").size()
+        repeat_customers = orders_per_customer[orders_per_customer > 1]
+        return len(repeat_customers) / len(orders_per_customer)
+
+    def monthly_revenue(self):
+        completed = self.df[self.df["status"] == "completed"]
+
+        return (
+            completed.set_index("order_date").sum()
+        )
