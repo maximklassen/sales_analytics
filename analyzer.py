@@ -1,5 +1,5 @@
 import pandas as pd
-
+import matplotlib.pyplot as plt
 
 class SalesAnalyzer:
     """Loading, cleaning and analyzing sales data."""
@@ -41,7 +41,7 @@ class SalesAnalyzer:
         self.df.to_csv(output_path, index=False)
 
     def total_revenue(self):
-        """Einkommen"""
+        """Umsatz"""
         return self.df.loc[
             self.df["status"] == "completed", "order_amount"
         ].sum()
@@ -74,14 +74,48 @@ class SalesAnalyzer:
 
     def monthly_revenue(self):
         completed = self.df[self.df["status"] == "completed"]
-
+        # completed["month"] = completed["order_date"].dt.to_period("M")
+        # completed.groupby("month")["order_amount"].sum()
         return (
-<<<<<<< HEAD
-            completed.set_index("order_date").sum()
-=======
-            completed
-            .set_index("order_date")
-            .resample("M")["order_amount"]
-            .sum()
->>>>>>> 5d239918be2094e1f8ba4fdf22a0c982b514b206
+            completed.set_index("order_date").resample("ME")["order_amount"].sum()
         )
+    
+
+    """ Charts """
+    
+    def plot_revenue_by_category(self, output_path):
+        data = self.revenue_by_category()
+
+        plt.figure()
+        data.plot(kind="bar")
+        plt.title("Umsatz nach Kategorien")
+        plt.xlabel("Kategorie")
+        plt.ylabel("Umsatz")
+        plt.tight_layout()
+        plt.savefig(output_path)
+        plt.close()
+
+    def plot_monthly_revenue(self, output_path):
+        data = self.monthly_revenue()
+
+        plt.figure()
+        data.plot()
+        plt.title("Monthly Revenue Trend")
+        plt.xlabel("Month")
+        plt.ylabel("Revenue")
+        plt.tight_layout()
+        plt.savefig(output_path)
+        plt.close()
+
+
+    def plot_order_amount_distribution(self, output_path):
+        completed = self.df[self.df["status"] == "completed"]
+
+        plt.figure()
+        plt.hist(completed["order_amount"], bins=20)
+        plt.title("Order Amount Distribution")
+        plt.xlabel("Order Amount")
+        plt.ylabel("Frequency")
+        plt.tight_layout()
+        plt.savefig(output_path)
+        plt.close()
