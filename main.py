@@ -5,8 +5,25 @@ from algorithms import (
 )
 
 def main():
-    print("Sorting performance:", compare_sorting_performance())
-    print("Search performance:", compare_search_performance())
+    analyzer = SalesAnalyzer("data/sales_data.csv")
+    analyzer.load_data()
+    analyzer.clean_data()
+
+    analyzer.plot_revenue_by_category(
+        "output/figures/revenue_by_category.png"
+    )
+
+    analyzer.plot_monthly_revenue(
+        "output/figures/monthly_revenue.png"
+    )
+
+    analyzer.plot_order_amount_distribution(
+        "output/figures/order_distribution.png"
+    )
+
+    print("Visualizations created")
+#    print("Sorting performance:", compare_sorting_performance())
+#    print("Search performance:", compare_search_performance())
 
 # def main():
 #    print("== Sales Analytics ==")
