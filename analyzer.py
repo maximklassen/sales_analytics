@@ -76,5 +76,12 @@ class SalesAnalyzer:
         completed = self.df[self.df["status"] == "completed"]
 
         return (
+<<<<<<< HEAD
             completed.set_index("order_date").sum()
+=======
+            completed
+            .set_index("order_date")
+            .resample("M")["order_amount"]
+            .sum()
+>>>>>>> 5d239918be2094e1f8ba4fdf22a0c982b514b206
         )
