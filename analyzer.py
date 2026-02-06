@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import utils
 
 class SalesAnalyzer:
     """Loading, cleaning and analyzing sales data."""
@@ -9,6 +10,9 @@ class SalesAnalyzer:
         self.df = None
 
     def load_data(self):
+        if not utils.file_exists(self.csv_path):
+            raise FileExistsError(f'Die Datei {self.csv_path} existiert nicht')
+        
         self.df = pd.read_csv(self.csv_path)
         return self.df
     
@@ -22,15 +26,12 @@ class SalesAnalyzer:
         df = self.df.copy()
         df.drop_duplicates(inplace=True)
         
-        df["order_date"] = pd.to_datetime(
-            df["order_date"], errors="coerce"
-        )
+        df["order_date"] = utils.parse_date(df["order_date"])
         
-        df["order_amount"] = pd.to_numeric(
-            df["order_amount"], errors="coerce"
-        )
+        df["order_amount"] = utils.parse_float(df["order_amount"])
         
-        df["status"] = df["status"].fillna("completed")
+        df["status"] = utils.normalize_status(df["status"])
+
 
         df = df.dropna(subset=["order_date", "order_amount"])
 
