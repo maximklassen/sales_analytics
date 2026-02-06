@@ -71,6 +71,9 @@ class SalesAnalyzer:
         orders_per_customer = self.df.groupby("customer_id").size()
         repeat_customers = orders_per_customer[orders_per_customer > 1]
         return len(repeat_customers) / len(orders_per_customer)
+    
+    def order_status_distribution(self):
+        return self.df["status"].value_counts(normalize=True) * 100
 
     def monthly_revenue(self):
         completed = self.df[self.df["status"] == "completed"]
@@ -100,9 +103,9 @@ class SalesAnalyzer:
 
         plt.figure()
         data.plot()
-        plt.title("Monthly Revenue Trend")
-        plt.xlabel("Month")
-        plt.ylabel("Revenue")
+        plt.title("Monatlicher Umsatztrend")
+        plt.xlabel("Monat")
+        plt.ylabel("Umsatz")
         plt.tight_layout()
         plt.savefig(output_path)
         plt.close()
@@ -113,9 +116,38 @@ class SalesAnalyzer:
 
         plt.figure()
         plt.hist(completed["order_amount"], bins=20)
-        plt.title("Order Amount Distribution")
-        plt.xlabel("Order Amount")
-        plt.ylabel("Frequency")
+        plt.title("Auftragsstatusverteilung")
+        plt.xlabel("Bestellbetrag")
+        plt.ylabel("Häufigkeit")
         plt.tight_layout()
         plt.savefig(output_path)
         plt.close()
+
+    def generate_summary_report(self, output_path):
+        lines = []
+
+        lines.append("ZUSAMMENFASSENDER BERICHT ZUR VERTRIEBSANALYSE")
+        lines.append("=" * 35)
+        lines.append("")
+
+        lines.append(f"Gesamtumsatz: {self.total_revenue():.2f}")
+        lines.append(f"Durchschnittlicher Bestellwert: {self.average_order_value():.2f}")
+        lines.append(f"Kundenzahl: {self.customer_count()}")
+        lines.append("")
+
+        lines.append("Umsatz nach Kategorien:")
+        for category, revenue in self.revenue_by_category().items():
+            lines.append(f"  {category}: {revenue:.2f}")
+
+        lines.append("")
+        lines.append("Auftragsstatusverteilung (%):")
+        for status, pct in self.order_status_distribution().items():
+            lines.append(f"  {status}: {pct:.1f}%")
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
+
+    def export_top_customers(self, output_path, n=10):
+        top = self.top_customers(n)
+        top.to_csv(output_path, header=["total_spent"])
+
