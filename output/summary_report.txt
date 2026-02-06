@@ -1,15 +1,15 @@
 ZUSAMMENFASSENDER BERICHT ZUR VERTRIEBSANALYSE
 ===================================
 
-Gesamtumsatz: 95120.88
+Gesamtumsatz: 95120.81
 Durchschnittlicher Bestellwert: 665.18
 Kundenzahl: 49
 
 Umsatz nach Kategorien:
-  Home & Garden: 23058.20
-  Clothing: 22416.43
-  Books: 18238.23
-  Sports: 18230.64
+  Home & Garden: 23058.19
+  Clothing: 22416.34
+  Books: 18238.24
+  Sports: 18230.66
   Electronics: 13177.38
 
 Auftragsstatusverteilung (%):

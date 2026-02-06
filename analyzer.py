@@ -11,7 +11,7 @@ class SalesAnalyzer:
 
     def load_data(self):
         if not utils.file_exists(self.csv_path):
-            raise FileExistsError(f'Die Datei {self.csv_path} existiert nicht')
+            raise FileExistsError(f'\033[33mDie Datei {self.csv_path} existiert nicht\033[0m')
         
         self.df = pd.read_csv(self.csv_path)
         return self.df
@@ -65,7 +65,7 @@ class SalesAnalyzer:
 
     def top_customers(self, n=10):
         return (
-            self.df[self.df["status"] == "completed"].groupby("customer_id")["order_amount"].sum().sort_values(ascending=False).head(n)
+            self.df[self.df["status"] == "completed"].groupby("customer_id")["order_amount"].sum().round(2).sort_values(ascending=False).head(n)
         )
 
     def repeat_customer_rate(self):
@@ -78,8 +78,6 @@ class SalesAnalyzer:
 
     def monthly_revenue(self):
         completed = self.df[self.df["status"] == "completed"]
-        # completed["month"] = completed["order_date"].dt.to_period("M")
-        # completed.groupby("month")["order_amount"].sum()
         return (
             completed.set_index("order_date").resample("ME")["order_amount"].sum()
         )
